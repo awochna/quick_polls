@@ -13,7 +13,7 @@ config :logger, level: :warn
 config :quick_polls, QuickPolls.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
-  password: "postgres",
+  password: "secret",
   database: "quick_polls_test",
-  hostname: "localhost",
+  hostname: "172.17.0.2",
   pool: Ecto.Adapters.SQL.Sandbox
