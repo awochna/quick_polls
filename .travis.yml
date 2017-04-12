@@ -2,5 +2,6 @@ language: elixir
 services: postgresql
 elixir:
   - 1.4.1
+  - 1.4.2
 env:
-  - POSTGRES_PASSWORD="" POSTGRES_HOST=localhost
+  - POSTGRES_HOST=localhost
