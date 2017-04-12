@@ -16,12 +16,18 @@ defmodule QuickPolls.Web.SessionController do
   end
 
   def new(conn, _params) do
-    if get_current_user(conn) do
+    if Doorman.logged_in?(conn) do
       conn
       |> put_flash(:notice, "You're already logged in.")
       |> redirect(to: "/")
     else
       render(conn, "new.html")
     end
+  end
+
+  def delete(conn, _params) do
+    conn
+    |> logout
+    |> redirect(to: "/")
   end
 end
