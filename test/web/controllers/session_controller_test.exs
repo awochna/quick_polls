@@ -44,4 +44,7 @@ defmodule QuickPolls.Web.SessionControllerTest do
     conn = delete conn, session_path(conn, :delete, :session)
     assert redirected_to(conn) == "/"
   end
+
+  @tag skip: "account recovery"
+  test "can request a one-time login link"
 end

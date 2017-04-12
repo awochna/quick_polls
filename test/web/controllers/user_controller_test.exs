@@ -39,4 +39,20 @@ defmodule QuickPolls.Web.UserControllerTest do
       assert html_response(conn, 200) =~ "has already been taken"
     end
   end
+
+  describe "edit/2" do
+    @tag skip: "update accounts"
+    test "displays edit form if signed in"
+    @tag skip: "update accounts"
+    test "redirects to index if not signed in"
+  end
+
+  describe "update/2" do
+    @tag skip: "update accounts"
+    test "can change name, without requiring password"
+    @tag skip: "update accounts"
+    test "can change email, if unique"
+    @tag skip: "update accounts"
+    test "can change password"
+  end
 end
