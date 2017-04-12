@@ -34,14 +34,14 @@ defmodule QuickPolls.Web.SessionControllerTest do
 
   test "can log out after logging in", %{conn: conn} do
     conn = post conn, session_path(conn, :create), session: @valid_creds
-    conn = delete conn, session_path(conn, :delete, :session)
+    conn = delete conn, session_path(conn, :delete)
     assert redirected_to(conn) == "/"
     conn = get conn, session_path(conn, :new)
     assert html_response(conn, 200) =~ "Log in"
   end
 
   test "logging out if not logged in does nothing", %{conn: conn} do
-    conn = delete conn, session_path(conn, :delete, :session)
+    conn = delete conn, session_path(conn, :delete)
     assert redirected_to(conn) == "/"
   end
 

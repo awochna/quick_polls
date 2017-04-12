@@ -19,7 +19,7 @@ defmodule QuickPolls.Web.Router do
 
     get "/", PageController, :index
     resources "/users", UserController
-    resources "/sessions", SessionController
+    resources "/sessions", SessionController, singleton: true
   end
 
   # Other scopes may use custom stacks.
