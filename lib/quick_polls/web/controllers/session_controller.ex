@@ -6,7 +6,7 @@ defmodule QuickPolls.Web.SessionController do
     if user = Doorman.authenticate(email, password) do
       conn
       |> login(user)
-      |> put_flash(:notice, "Successfully logged in")
+      |> put_flash(:success, "Successfully logged in")
       |> redirect(to: "/")
     else
       conn
@@ -18,7 +18,7 @@ defmodule QuickPolls.Web.SessionController do
   def new(conn, _params) do
     if Doorman.logged_in?(conn) do
       conn
-      |> put_flash(:notice, "You're already logged in.")
+      |> put_flash(:info, "You're already logged in.")
       |> redirect(to: "/")
     else
       render(conn, "new.html")
@@ -28,6 +28,7 @@ defmodule QuickPolls.Web.SessionController do
   def delete(conn, _params) do
     conn
     |> logout
+    |> put_flash(:info, "Logged out")
     |> redirect(to: "/")
   end
 end

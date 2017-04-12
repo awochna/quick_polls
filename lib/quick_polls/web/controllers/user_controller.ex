@@ -13,7 +13,9 @@ defmodule QuickPolls.Web.UserController do
 
     case Repo.insert(changeset) do
       {:ok, user} ->
-        redirect(conn, to: page_path(conn, :index))
+        conn
+        |> put_flash(:success, "Account created")
+        |> redirect(to: page_path(conn, :index))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
