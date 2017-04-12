@@ -17,6 +17,7 @@ config :comeonin, :pbkdf2_rounds, 1
 config :quick_polls, QuickPolls.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
+  password: "secret",
   database: "quick_polls_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
