@@ -3,4 +3,5 @@ elixir:
   - 1.4.1
 services: postgresql
 env:
-  - MIX_ENV=ci
+  - POSTGRES_PASSWORD=
+  - POSTGRES_HOST=localhost
