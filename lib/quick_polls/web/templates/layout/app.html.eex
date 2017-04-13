@@ -24,7 +24,7 @@
             <% end %>
           </ul>
         </nav>
-        <span class="logo"></span>
+        <h1 class="logo"><a href="/">Quick Polls</a></h1>
       </header>
 
       <p class="alert alert-success" role="alert"><%= get_flash(@conn, :success) %></p>
