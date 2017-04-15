@@ -1,5 +1,6 @@
 defmodule QuickPolls.Web.UserControllerTest do
   use QuickPolls.Web.ConnCase, async: true
+  import QuickPolls.TestHelpers
 
   alias QuickPolls.Repo
   alias QuickPolls.User
@@ -33,8 +34,7 @@ defmodule QuickPolls.Web.UserControllerTest do
     end
 
     test "Does not create a user if using a duplicate email address", %{conn: conn} do
-      changeset = User.create_changeset(%User{}, @valid_attrs)
-      Repo.insert!(changeset)
+      insert_user(@valid_attrs)
       conn = post conn, user_path(conn, :create), user: @valid_attrs
       assert html_response(conn, 200) =~ "has already been taken"
     end

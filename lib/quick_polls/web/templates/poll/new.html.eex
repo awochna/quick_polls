@@ -1,0 +1,4 @@
+<h2>Create a new poll</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: poll_path(@conn, :create) %>

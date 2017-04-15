@@ -10,6 +10,8 @@ defmodule QuickPolls.User do
     field :hashed_password, :string
     field :password, :string, virtual: true
 
+    has_many :polls, QuickPolls.Poll
+
     timestamps()
   end
 
