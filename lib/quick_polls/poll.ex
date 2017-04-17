@@ -4,12 +4,11 @@ defmodule QuickPolls.Poll do
   alias Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
 
   schema "polls" do
     field :name, :string
 
-    belongs_to :user, QuickPolls.User, type: :integer
+    belongs_to :user, QuickPolls.User
 
     timestamps()
   end
@@ -21,7 +20,7 @@ defmodule QuickPolls.Poll do
   def create_changeset(struct, params \\ %{}) do
     struct
     |> Changeset.cast(params, ~w(name))
-    |> Changeset.put_assoc(:user, params.user)
-    |> Changeset.validate_required([:name, :user])
+    |> Changeset.put_assoc(:user, params["user"])
+    |> Changeset.validate_required([:name])
   end
 end

@@ -1,0 +1,4 @@
+<h2>Recent Polls</h2>
+<%= for poll <- @polls do %>
+  <%= render "poll_listing.html", poll: poll %>
+<% end %>
