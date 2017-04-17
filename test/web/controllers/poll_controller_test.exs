@@ -2,17 +2,14 @@ defmodule QuickPolls.Web.PollControllerTest do
   use QuickPolls.Web.ConnCase, async: true
   import QuickPolls.TestHelpers
 
-  @user %{name: "todrick", email: "todrick@example.com", password: "some secret"}
+  alias QuickPolls.Poll
+
   @valid_attrs %{name: "Glasses"}
   @invalid_attrs %{}
 
-  setup context do
-    if context[:logged_in] do
-      user = insert_user(@user)
-      conn = Plug.Conn.assign(context.conn, :user_id, user.id)
-      [conn: conn]
-    end
-    :ok
+  setup do
+    user = insert_user()
+    [user: user]
   end
 
   test "index/2 lists recent polls", %{conn: conn} do
@@ -33,22 +30,32 @@ defmodule QuickPolls.Web.PollControllerTest do
   end
 
   @tag :logged_in
-  @tag :skip
-  test "logged in, new/2 provides form for polls", %{conn: conn} do
+  test "logged in, new/2 provides form for polls", %{conn: conn, user: user} do
+    conn = assign(conn, :current_user, user.id)
     conn = get conn, poll_path(conn, :new)
     assert html_response(conn, 200) =~ "Create a new poll"
     assert html_response(conn, 200) =~ "Name"
   end
 
   describe "create/2" do
-    @tag :skip
-    test "with valid attributes, creates poll", %{conn: conn} do
+    test "logged out, with valid attributes, redirects to login", %{conn: conn} do
       conn = post conn, poll_path(conn, :create), poll: @valid_attrs
-      assert html_response(conn, 302)
+      assert redirected_to(conn, 302) =~ "sessions"
     end
-    @tag :skip
-    test "with invalid attributes, doesn't create poll"
+    test "logged in, with valid attributes, creates poll", %{conn: conn, user: user} do
+      conn = assign(conn, :current_user, user.id)
+      conn = post conn, poll_path(conn, :create), poll: @valid_attrs
+      assert redirected_to(conn, 302) =~ "polls"
+      assert Enum.count(QuickPolls.Repo.all(Poll)) == 1
+    end
+    test "logged in, with invalid attributes, doesn't create poll", %{conn: conn, user: user} do
+      conn = assign(conn, :current_user, user.id)
+      conn = post conn, poll_path(conn, :create), poll: @invalid_attrs
+      assert html_response(conn, 200) =~ "Oops"
+      assert Enum.count(QuickPolls.Repo.all(Poll)) == 0
+    end
   end
+
   describe "delete/3" do
     @tag :skip
     test "when owner, deletes"

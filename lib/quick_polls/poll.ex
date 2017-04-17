@@ -22,5 +22,6 @@ defmodule QuickPolls.Poll do
     |> Changeset.cast(params, ~w(name))
     |> Changeset.put_assoc(:user, params["user"])
     |> Changeset.validate_required([:name])
+    |> Changeset.assoc_constraint(:user)
   end
 end
