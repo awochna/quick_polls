@@ -13,7 +13,7 @@ defmodule QuickPolls.Poll do
     timestamps()
   end
 
-  def new_changeset(struct, params \\ %{}) do
+  def new_changeset(struct) do
     Changeset.change(struct)
   end
 
@@ -21,7 +21,10 @@ defmodule QuickPolls.Poll do
     struct
     |> Changeset.cast(params, ~w(name))
     |> Changeset.put_assoc(:user, params["user"])
-    |> Changeset.validate_required([:name])
-    |> Changeset.assoc_constraint(:user)
+    |> Changeset.validate_required([:name, :user])
+  end
+
+  def edit_changeset(struct) do
+    Changeset.change(struct)
   end
 end

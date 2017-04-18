@@ -1,0 +1,4 @@
+<h2>Edit your poll</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: poll_path(@conn, :update, @poll.id) %>

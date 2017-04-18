@@ -14,13 +14,25 @@ defmodule QuickPolls.TestHelpers do
     %User{}
     |> User.create_changeset(changeset)
     |> Repo.insert!()
+    |> Map.put(:password, nil)
   end
 
-  def insert_poll(attrs \\ %{}) do
-    user = Map.get(attrs, :user) || insert_user()
+  def insert_poll(attrs \\ %{})
+  def insert_poll(%{user: user} = attrs) do
     changeset = Map.merge(%{
-      name: "Some Poll",
-      user: user,
+      "name" => "Some Poll",
+      "user" => user,
+    }, attrs)
+
+    %Poll{}
+    |> Poll.create_changeset(changeset)
+    |> Repo.insert!()
+  end
+  def insert_poll(attrs) do
+    user = insert_user()
+    changeset = Map.merge(%{
+      "name" => "Some Poll",
+      "user" => user,
     }, attrs)
 
     %Poll{}

@@ -1,9 +1,8 @@
 defmodule QuickPolls.Web.PollController do
   use QuickPolls.Web, :controller
 
-  alias Doorman.Login.Session
-  alias QuickPolls.Poll
   alias QuickPolls.Repo
+  alias QuickPolls.Poll
 
   def index(conn, _params) do
     render conn, "index.html", polls: Repo.all(Poll)
@@ -30,7 +29,8 @@ defmodule QuickPolls.Web.PollController do
 
   def create(conn, %{"poll" => poll_params}) do
     if Doorman.logged_in?(conn) do
-      poll_params = Map.put(poll_params, "user", Session.get_current_user(conn))
+      user = conn.assigns.current_user
+      poll_params = Map.put(poll_params, "user", user)
       changeset = Poll.create_changeset(%Poll{}, poll_params)
 
       case Repo.insert(changeset) do
@@ -45,6 +45,18 @@ defmodule QuickPolls.Web.PollController do
       conn
       |> put_flash(:warn, "You have to log in first")
       |> redirect(to: session_path(conn, :new))
+    end
+  end
+
+  def edit(conn, %{"id" => poll_id}) do
+    poll = Repo.preload(Repo.get(Poll, poll_id), :user)
+    user = conn.assigns.current_user
+    if poll.user == user do
+      render conn, "edit.html", changeset: Poll.edit_changeset(poll), poll: poll
+    else
+      conn
+      |> put_flash(:warn, "You don't own that poll")
+      |> redirect(to: poll_path(conn, :index))
     end
   end
 end
