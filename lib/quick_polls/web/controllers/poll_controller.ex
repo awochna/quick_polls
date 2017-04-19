@@ -3,6 +3,9 @@ defmodule QuickPolls.Web.PollController do
 
   alias QuickPolls.Repo
   alias QuickPolls.Poll
+  alias QuickPolls.Web.RequireLogin
+
+  plug RequireLogin when action in [:new, :create, :edit, :update, :delete]
 
   def index(conn, _params) do
     render conn, "index.html", polls: Repo.all(Poll)
@@ -18,33 +21,21 @@ defmodule QuickPolls.Web.PollController do
   end
 
   def new(conn, _params) do
-    if Doorman.logged_in?(conn) do
-      render conn, "new.html", changeset: Poll.new_changeset(%Poll{})
-    else
-      conn
-      |> put_flash(:warn, "You have to log in first")
-      |> redirect(to: session_path(conn, :new))
-    end
+    render conn, "new.html", changeset: Poll.new_changeset(%Poll{})
   end
 
   def create(conn, %{"poll" => poll_params}) do
-    if Doorman.logged_in?(conn) do
-      user = conn.assigns.current_user
-      poll_params = Map.put(poll_params, "user", user)
-      changeset = Poll.create_changeset(%Poll{}, poll_params)
+    user = conn.assigns.current_user
+    poll_params = Map.put(poll_params, "user", user)
+    changeset = Poll.create_changeset(%Poll{}, poll_params)
 
-      case Repo.insert(changeset) do
-        {:ok, poll} ->
-          conn
-          |> put_flash(:success, "Poll created")
-          |> redirect(to: poll_path(conn, :show, poll))
-        {:error, changeset} ->
-          render(conn, "new.html", changeset: changeset)
-      end
-    else
-      conn
-      |> put_flash(:warn, "You have to log in first")
-      |> redirect(to: session_path(conn, :new))
+    case Repo.insert(changeset) do
+      {:ok, poll} ->
+        conn
+        |> put_flash(:success, "Poll created")
+        |> redirect(to: poll_path(conn, :show, poll))
+      {:error, changeset} ->
+        render(conn, "new.html", changeset: changeset)
     end
   end
 

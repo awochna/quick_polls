@@ -29,7 +29,6 @@ defmodule QuickPolls.Web.PollControllerTest do
     assert redirected_to(conn) =~ session_path(conn, :new)
   end
 
-  @tag :logged_in
   test "logged in, new/2 provides form for polls", %{conn: conn, user: user} do
     conn = assign(conn, :current_user, user.id)
     conn = get conn, poll_path(conn, :new)
@@ -69,8 +68,11 @@ defmodule QuickPolls.Web.PollControllerTest do
       conn = get conn, poll_path(conn, :edit, poll)
       assert redirected_to(conn) == poll_path(conn, :index)
     end
-    @tag :skip
-    test "when not logged in, redirects to login form"
+    test "when not logged in, redirects to login form", %{conn: conn} do
+      poll = insert_poll()
+      conn = get conn, poll_path(conn, :edit, poll)
+      assert redirected_to(conn) == session_path(conn, :new)
+    end
   end
   describe "update/3" do
     @tag :skip
