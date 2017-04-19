@@ -50,4 +50,46 @@ defmodule QuickPolls.Web.PollController do
       |> redirect(to: poll_path(conn, :index))
     end
   end
+
+  def update(conn, %{"id" => poll_id, "poll" => poll_params}) do
+    poll = Repo.preload(Repo.get(Poll, poll_id), :user)
+    user = conn.assigns.current_user
+    if poll.user == user do
+      changeset = Poll.update_changeset(poll, poll_params)
+
+      case Repo.update(changeset) do
+        {:ok, poll} ->
+          conn
+          |> put_flash(:success, "Poll updated")
+          |> redirect(to: poll_path(conn, :show, poll))
+        {:error, changeset} ->
+          render conn, "edit.html", changeset: changeset, poll: poll
+      end
+    else
+      conn
+      |> put_flash(:warn, "You don't own that poll")
+      |> redirect(to: poll_path(conn, :index))
+    end
+  end
+
+  def delete(conn, %{"id" => poll_id}) do
+    poll = Repo.preload(Repo.get(Poll, poll_id), :user)
+    user = conn.assigns.current_user
+    if poll.user == user do
+      case Repo.delete(poll) do
+        {:ok, poll} ->
+          conn
+          |> put_flash(:success, "Poll deleted")
+          |> redirect(to: poll_path(conn, :index))
+        {:error, _changeset} ->
+          conn
+          |> put_flash(:error, "Things broke real hard")
+          |> redirect(to: poll_path(conn, :show, poll))
+      end
+    else
+      conn
+      |> put_flash(:warn, "You don't own that poll")
+      |> redirect(to: poll_path(conn, :index))
+    end
+  end
 end
