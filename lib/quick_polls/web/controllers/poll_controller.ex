@@ -3,6 +3,7 @@ defmodule QuickPolls.Web.PollController do
 
   alias QuickPolls.Repo
   alias QuickPolls.Poll
+  alias QuickPolls.Poll.Question
   alias QuickPolls.Web.RequireLogin
 
   plug RequireLogin when action in [:new, :create, :edit, :update, :delete]
@@ -28,6 +29,9 @@ defmodule QuickPolls.Web.PollController do
     user = conn.assigns.current_user
     poll_params = Map.put(poll_params, "user", user)
     changeset = Poll.create_changeset(%Poll{}, poll_params)
+    Map.get(poll_params, "questions")
+    |> Enum.map(&(Question.create_changeset(%Question{}, &1)))
+    |> Enum.each(&Repo.insert!/1)
 
     case Repo.insert(changeset) do
       {:ok, poll} ->
